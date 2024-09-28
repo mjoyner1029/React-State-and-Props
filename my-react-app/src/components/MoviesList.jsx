@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 
 const MoviesList = () => {
-    const [movies, setMovies] = useState([
+    const initialMovies = [
         { title: 'Inception', description: 'A mind-bending thriller by Christopher Nolan.', genre: 'Sci-Fi' },
         { title: 'The Dark Knight', description: 'A thrilling Batman story.', genre: 'Action' },
         { title: 'Pulp Fiction', description: 'A classic by Quentin Tarantino.', genre: 'Crime' },
-    ]);
+    ];
 
+    const [movies, setMovies] = useState(initialMovies);
     const [showAll, setShowAll] = useState(true);
+    const [toggleStates, setToggleStates] = useState({});
 
     const toggleView = () => {
         setShowAll(!showAll);
@@ -15,6 +17,13 @@ const MoviesList = () => {
 
     const removeMovie = (title) => {
         setMovies(movies.filter(movie => movie.title !== title));
+    };
+
+    const toggleDetails = (title) => {
+        setToggleStates(prevStates => ({
+            ...prevStates,
+            [title]: !prevStates[title],
+        }));
     };
 
     return (
@@ -27,10 +36,10 @@ const MoviesList = () => {
                     .filter(movie => showAll || movie.genre === 'Action')
                     .map(movie => (
                         <li key={movie.title}>
-                            <span onClick={() => (movie.showDetails = !movie.showDetails)}>
+                            <span onClick={() => toggleDetails(movie.title)}>
                                 {movie.title}
                             </span>
-                            {movie.showDetails && <p>{movie.description}</p>}
+                            {toggleStates[movie.title] && <p>{movie.description}</p>}
                             <button onClick={() => removeMovie(movie.title)}>Remove</button>
                         </li>
                     ))}
